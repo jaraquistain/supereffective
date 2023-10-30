@@ -26,7 +26,7 @@ export type DexBox = {
   title?: string
   pokemon: DexPokemonList
   shiny: boolean
-  unfilteredIndex?: number
+  hasFilterMatch?: boolean
 }
 
 export type PkFilterAttribute = 'pid' | 'nid'

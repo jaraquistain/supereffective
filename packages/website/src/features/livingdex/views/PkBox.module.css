@@ -273,11 +273,13 @@
   z-index: 10;
 }
 
+.cellSelectMode.editable .filterMatch::before,
 .cellSelectMode.editable .pkBoxCell:hover::before,
 .cellSelectMode.editable .pkBoxCell:focus::before {
   background: var(--bg-circle-shadow-purple);
 }
 
+.filterMatch::before,
 .pkBoxCell:hover::before {
   content: '';
   display: block;
@@ -286,6 +288,8 @@
 
 .boxSelectMode.editable .pkBoxContent:hover,
 .boxSelectMode.editable .pkBoxContent:focus,
+.boxSelectMode.editable .filterMatch,
+.cellSelectMode.editable .filterMatch::before,
 .cellSelectMode.editable .pkBoxCell:hover::before,
 .cellSelectMode.editable .pkBoxCell:focus::before {
   /*border: 3px solid rgba(149, 106, 232, 0.7);*/
@@ -318,6 +322,7 @@
   pointer-events: none;
 }
 
+.boxSelectMode.editable .filterMatch .pkBoxContent,
 .boxSelectMode.editable .pkBoxContent:hover,
 .boxSelectMode.editable .pkBoxContent:focus {
   cursor: pointer;
@@ -362,9 +367,11 @@
 
 .pkBoxCell.uncaught:hover img,
 .pkBoxCell.uncaught:focus img,
+.filterMatch.uncaught img,
 .boxSelectMode .pkBoxContent:hover .pkBoxCell.uncaught img,
 .boxSelectMode .pkBoxContent:focus .pkBoxCell.uncaught img,
 .pkBoxCell.reveal img,
+.boxSelectMode .filterMatch .pkBoxContent .pkBoxCell.uncaught img .pkBoxCell.reveal img,
 .pkBoxCell.shiny.shinyLocked:hover img {
   opacity: 1;
   filter: none !important;
@@ -372,6 +379,7 @@
 
 .uncaught:hover .pkBoxCellContent,
 .uncaught:focus .pkBoxCellContent,
+.filterMatch .pkBoxCellContent,
 .uncaught .pkBoxCellContent:hover,
 .uncaught .pkBoxCellContent:focus {
   background: none;

@@ -28,10 +28,14 @@ export function PkBoxGroupFilter(props: PkBoxGroupFilterProps) {
   // wrap our debounced callback in a function that extracts the actual useful value out of the event
   // and turns it into a filter object
   const handleFilterInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filter: PkFilter = {
-      query: e.target.value,
-      attribute: FILTER_ATTRIBUTE,
-    }
+    const query = e.target.value
+
+    const filter: PkFilter | null = !query
+      ? null
+      : {
+          query: e.target.value,
+          attribute: FILTER_ATTRIBUTE,
+        }
 
     debouncedFilter(filter)
   }

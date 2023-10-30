@@ -25,30 +25,37 @@ import { PkBoxGroupProps, PkBoxGroupState } from './pkBoxTypes'
 import PkImgFile from './PkImgFile'
 
 // Goes through a box and marks individual pokemon that match the given filter
-function modifyFilteredBox(box: DexBox, unfilteredIndex: number, filter: PkFilter): DexBox {
+function modifyFilteredBox(filter: PkFilter, box: DexBox): DexBox {
+  let hasFilterMatch = false
   const updatedPokemon: DexPokemonList = box.pokemon.map(currentPokemon => {
     const matchesFilter = pokemonMatcher(filter, currentPokemon)
+
+    // Set the box level flag if we see our first match
+    if (!hasFilterMatch && matchesFilter) {
+      hasFilterMatch = true
+    }
+
     return currentPokemon ? { ...currentPokemon, matchesFilter } : null
   })
 
-  return { ...box, unfilteredIndex, pokemon: updatedPokemon }
+  return { ...box, hasFilterMatch, pokemon: updatedPokemon }
 }
 
 // Reduces the list of boxes down to only those that contains a match
-function boxReducer(
-  filter: PkFilter,
-  boxList: DexBox[],
-  currentBox: DexBox,
-  unfilteredIndex: number
-): DexBox[] {
-  const { pokemon } = currentBox
+// function boxReducer(
+//   filter: PkFilter,
+//   boxList: DexBox[],
+//   currentBox: DexBox,
+//   unfilteredIndex: number
+// ): DexBox[] {
+//   const { pokemon } = currentBox
 
-  // Look for a match within the box
-  const foundMatch = !!pokemon.find(pokemonMatcher.bind(null, filter))
+//   // Look for a match within the box
+//   const foundMatch = !!pokemon.find(pokemonMatcher.bind(null, filter))
 
-  // If there was a match, mark the matching pokemon and add it to the list
-  return foundMatch ? [...boxList, modifyFilteredBox(currentBox, unfilteredIndex, filter)] : boxList
-}
+//   // If there was a match, mark the matching pokemon and add it to the list
+//   return foundMatch ? [...boxList, modifyFilteredBox(currentBox, unfilteredIndex, filter)] : boxList
+// }
 
 // Normalizes strings to be compared for filtering
 function normalizeFilterData(string: string): string {
@@ -70,10 +77,10 @@ function pokemonMatcher(filter: PkFilter, currentPokemon: NullableDexPokemon): b
 }
 
 // Reduces the boxes within the dex to only those that contain a pokemon matching the query
-function createFilteredDex(dex: LoadedDex, filter: PkFilter): LoadedDex {
+export function createFilteredDex(dex: LoadedDex, filter: PkFilter): LoadedDex {
   const { boxes } = dex
 
-  const filteredBoxes = boxes.reduce(boxReducer.bind(null, filter), [])
+  const filteredBoxes = boxes.map(modifyFilteredBox.bind(null, filter), [])
   return { ...dex, boxes: filteredBoxes }
 }
 
@@ -126,10 +133,9 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
   const initialTabIndex = 1
 
   filteredDex.boxes.forEach((box, boxIndex) => {
+    const boxListToPush = box.shiny ? shinyBoxElements : boxElements
     let boxCells: any[] = []
-    const unfilteredBoxIndex = box.unfilteredIndex || boxIndex
     const boxTabIndex = props.selectMode === 'box' ? initialTabIndex + boxIndex : undefined
-
     box.pokemon.forEach((cellPkm, cellIndex) => {
       let cellTabIndex: number | undefined =
         initialTabIndex +
@@ -145,7 +151,7 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
         //  || (cellPkm.shiny && cellPkm.shinyBase)
         boxCells.push(
           <PkBoxEmptyCell
-            boxIndex={unfilteredBoxIndex}
+            boxIndex={boxIndex}
             pokemonIndex={cellIndex}
             tabIndex={cellTabIndex}
             pokemonData={cellPkm}
@@ -191,7 +197,7 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
 
       boxCells.push(
         <PkBoxCell
-          boxIndex={unfilteredBoxIndex}
+          boxIndex={boxIndex}
           pokemonIndex={cellIndex}
           tabIndex={cellTabIndex}
           pokemonData={cellPkm}
@@ -244,16 +250,16 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
       )
     })
 
-    if (props.viewMode === 'listed') {
-      ;(box.shiny ? shinyBoxElements : boxElements).push(...boxCells)
+    // Only push into the list if we have anything to push
+    if (props.viewMode === 'listed' && boxCells.length) {
+      boxListToPush.push(...boxCells)
       return
     }
 
-    const nextIdx = (box.shiny ? shinyBoxElements : boxElements).length + 1
+    const nextIdx = boxListToPush.length + 1
     const boxTitle = createBoxTitle(props.dex.gameSetId, box.title, nextIdx)
     const isOverflowing = nextIdx > getGameSetByGameId(props.dex.gameId).storage.boxes
-
-    ;(box.shiny ? shinyBoxElements : boxElements).push(
+    const boxContent = (
       <PkBox
         boxIndex={boxIndex}
         key={boxIndex + `${box.shiny ? '-shiny' : '-regular'}`}
@@ -273,10 +279,18 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
         {boxCells}
       </PkBox>
     )
+    boxListToPush.push(boxContent)
   })
 
-  const totalBoxCount = props.showShiny ? shinyBoxElements.length : boxElements.length
-  const pagedBoxElements = (props.showShiny ? shinyBoxElements : boxElements).slice(0, perPage)
+  const boxElementsToUse = props.showShiny ? shinyBoxElements : boxElements
+  const totalBoxCount = boxElementsToUse.length
+
+  const pagedBoxElements = boxElementsToUse
+    .filter(element => {
+      const { pokemonData, boxData } = element.props
+      return !state.filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
+    })
+    .slice(0, perPage)
   const hasMoreBoxes = perPage < totalBoxCount
 
   // const handleLoadAll = (): void => {
@@ -326,7 +340,7 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
           </div>
         </div>
       )}
-      {props.showShiny && pagedBoxElements.length > 0 && (
+      {props.showShiny && (
         <div className={'pkBoxGroupWr pkBoxGroupWr-shiny'}>
           {
             <div className={'text-center pkBoxGroupWr-separator'}>
@@ -335,6 +349,7 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
               </div>
             </div>
           }
+          <PkBoxGroupFilter onChange={handleBoxFilter} />
           <div className={classes}>
             <div
               className={[styles.pkBoxGroupContent, 'pkBoxCount-' + pagedBoxElements.length].join(

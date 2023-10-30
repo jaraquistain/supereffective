@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import { getGameSetByGameId } from '@pkg/database/repositories/game-sets'
 import { createBoxTitle } from '@pkg/database/repositories/living-dexes/legacy/presets/createBoxTitle'
-import { DexBox } from '@pkg/database/repositories/living-dexes/legacy/types'
+import { DexBox, PkFilter } from '@pkg/database/repositories/living-dexes/legacy/types'
 import { getPokemonEntry } from '@pkg/database/repositories/pokemon'
 
 import legacyConfig from '#/config/legacyConfig'
@@ -13,10 +13,16 @@ import { PkBox } from './PkBox'
 import styles from './PkBox.module.css'
 import { PkBoxCell } from './PkBoxCell'
 import { PkBoxEmptyCell } from './PkBoxEmptyCell'
-import { PkBoxGroupProps } from './pkBoxTypes'
+import { createFilteredDex } from './PkBoxGroup'
+import { PkBoxGroupFilter } from './PkBoxGroupFilter'
+import { PkBoxGroupProps, PkBoxGroupState } from './pkBoxTypes'
 import PkImgFile from './PkImgFile'
 
 export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
+  const [state, setState] = useState<PkBoxGroupState>({
+    filter: null,
+  })
+  const filteredDex = state.filter ? createFilteredDex(props.dex, state.filter) : props.dex
   const showShiny = props.showShiny ?? false
   const showRegular = props.showNonShiny ?? true
   const showMixed = showShiny && showRegular
@@ -30,6 +36,11 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
   }
 
   const [perPage, setPerPage] = useState(initialPerPage)
+
+  // Sets the new filter state
+  const handleBoxFilter = (filter: PkFilter): void => {
+    setState({ filter })
+  }
 
   const handleLoadMore = (): void => {
     setPerPage(Math.min(perPage + initialPerPage, totalBoxCount))
@@ -54,11 +65,11 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
     return () => observer.disconnect()
   }, [perPage])
 
-  const { dex, usePixelIcons } = props
+  const { usePixelIcons } = props
   let boxElements: ReactElement[] = []
   const initialTabIndex = 1
 
-  const [regularBoxes, shinyBoxes] = dex.boxes.reduce(
+  const [regularBoxes, shinyBoxes] = filteredDex.boxes.reduce(
     (acc, box) => {
       if (box.shiny) {
         acc[1].push(box)
@@ -70,7 +81,7 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
     [[], []] as [DexBox[], DexBox[]]
   )
 
-  const _boxes = showShinyAfterRegular ? [...regularBoxes, ...shinyBoxes] : dex.boxes
+  const _boxes = showShinyAfterRegular ? [...regularBoxes, ...shinyBoxes] : filteredDex.boxes
 
   _boxes.forEach((box, boxIndex) => {
     let boxCells: any[] = []
@@ -196,7 +207,7 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
     }
     const nextIdx = boxElements.length + 1
     const boxTitle = createBoxTitle(props.dex.gameSetId, box.title, nextIdx)
-    const isOverflowing = nextIdx > getGameSetByGameId(dex.gameId).storage.boxes
+    const isOverflowing = nextIdx > getGameSetByGameId(filteredDex.gameId).storage.boxes
 
     boxElements.push(
       <PkBox
@@ -220,7 +231,12 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
     )
   })
   const totalBoxCount = boxElements.length
-  const pagedBoxElements = boxElements.slice(0, perPage)
+  const pagedBoxElements = boxElements
+    .filter(element => {
+      const { pokemonData, boxData } = element.props
+      return !state.filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
+    })
+    .slice(0, perPage)
   const hasMoreBoxes = perPage < totalBoxCount
 
   const loadMoreBtn = hasMoreBoxes ? (
@@ -248,6 +264,7 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
             </div>
           </div>
         }
+        <PkBoxGroupFilter onChange={handleBoxFilter} />
         <div className={classes}>
           <div
             className={[styles.pkBoxGroupContent, 'pkBoxCount-' + pagedBoxElements.length].join(

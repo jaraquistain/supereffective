@@ -9,7 +9,7 @@ export function PkBoxCell(props: PkBoxCellProps) {
     styles.pkBoxCell,
     props.className,
     classNameIf(props.revealPokemon, styles.reveal),
-    classNameIf(!!props.pokemonData?.matchesFilter, 'filterMatch')
+    classNameIf(!!props.pokemonData?.matchesFilter, styles.filterMatch)
   )
 
   const clickHandler = () => {
