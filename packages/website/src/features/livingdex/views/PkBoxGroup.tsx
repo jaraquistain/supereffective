@@ -60,6 +60,17 @@ function pokemonMatcher(filter: PkFilter, currentPokemon: NullableDexPokemon): b
   return pokemonAttributeSlug.includes(querySlug)
 }
 
+/*
+Only include a box element if: 
+ 1) There is no filter
+ 2) You're in box view and the box matches the filter
+ 3) You're in list view and the pokemone matches the filter
+*/
+export function filterBoxElements(filter:PkFilter | null ,element: ReactElement) {
+  const { pokemonData, boxData } = element.props
+  return !filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
+}
+
 // Modifies a given dex by indicating whether individual pokemon and their box match the filter
 export function createFilteredDex(dex: LoadedDex, filter: PkFilter): LoadedDex {
   const boxes = dex.boxes.map(modifyFilteredBox.bind(null, filter))
@@ -268,10 +279,7 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
   const totalBoxCount = boxElementsToUse.length
 
   const pagedBoxElements = boxElementsToUse
-    .filter(element => {
-      const { pokemonData, boxData } = element.props
-      return !state.filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
-    })
+    .filter(filterBoxElements.bind(null, state.filter))
     .slice(0, perPage)
   const hasMoreBoxes = perPage < totalBoxCount
 

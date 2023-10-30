@@ -13,7 +13,7 @@ import { PkBox } from './PkBox'
 import styles from './PkBox.module.css'
 import { PkBoxCell } from './PkBoxCell'
 import { PkBoxEmptyCell } from './PkBoxEmptyCell'
-import { createFilteredDex } from './PkBoxGroup'
+import { createFilteredDex, filterBoxElements } from './PkBoxGroup'
 import { PkBoxGroupFilter } from './PkBoxGroupFilter'
 import { PkBoxGroupProps, PkBoxGroupState } from './pkBoxTypes'
 import PkImgFile from './PkImgFile'
@@ -232,10 +232,7 @@ export function PkBoxGroupShinyMixed(props: PkBoxGroupProps) {
   })
   const totalBoxCount = boxElements.length
   const pagedBoxElements = boxElements
-    .filter(element => {
-      const { pokemonData, boxData } = element.props
-      return !state.filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
-    })
+    .filter(filterBoxElements.bind(null, state.filter))
     .slice(0, perPage)
   const hasMoreBoxes = perPage < totalBoxCount
 
