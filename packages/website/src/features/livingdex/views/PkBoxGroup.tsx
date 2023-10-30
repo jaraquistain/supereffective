@@ -66,7 +66,7 @@ Only include a box element if:
  2) You're in box view and the box matches the filter
  3) You're in list view and the pokemone matches the filter
 */
-export function filterBoxElements(filter:PkFilter | null ,element: ReactElement) {
+export function filterBoxElements(filter: PkFilter | null, element: ReactElement) {
   const { pokemonData, boxData } = element.props
   return !filter || boxData?.hasFilterMatch || pokemonData?.matchesFilter
 }
