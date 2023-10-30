@@ -41,22 +41,6 @@ function modifyFilteredBox(filter: PkFilter, box: DexBox): DexBox {
   return { ...box, hasFilterMatch, pokemon: updatedPokemon }
 }
 
-// Reduces the list of boxes down to only those that contains a match
-// function boxReducer(
-//   filter: PkFilter,
-//   boxList: DexBox[],
-//   currentBox: DexBox,
-//   unfilteredIndex: number
-// ): DexBox[] {
-//   const { pokemon } = currentBox
-
-//   // Look for a match within the box
-//   const foundMatch = !!pokemon.find(pokemonMatcher.bind(null, filter))
-
-//   // If there was a match, mark the matching pokemon and add it to the list
-//   return foundMatch ? [...boxList, modifyFilteredBox(currentBox, unfilteredIndex, filter)] : boxList
-// }
-
 // Normalizes strings to be compared for filtering
 function normalizeFilterData(string: string): string {
   return slugify(string.trim()).replace(/-/g, '')
@@ -76,12 +60,10 @@ function pokemonMatcher(filter: PkFilter, currentPokemon: NullableDexPokemon): b
   return pokemonAttributeSlug.includes(querySlug)
 }
 
-// Reduces the boxes within the dex to only those that contain a pokemon matching the query
+// Modifies a given dex by indicating whether individual pokemon and their box match the filter
 export function createFilteredDex(dex: LoadedDex, filter: PkFilter): LoadedDex {
-  const { boxes } = dex
-
-  const filteredBoxes = boxes.map(modifyFilteredBox.bind(null, filter), [])
-  return { ...dex, boxes: filteredBoxes }
+  const boxes = dex.boxes.map(modifyFilteredBox.bind(null, filter))
+  return { ...dex, boxes }
 }
 
 export function PkBoxGroup(props: PkBoxGroupProps) {
