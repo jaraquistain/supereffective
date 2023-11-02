@@ -1,5 +1,4 @@
 import { PkFilter, PkFilterAttribute } from '@pkg/database/repositories/living-dexes/legacy/types'
-import { hasDevFeaturesEnabled } from '@pkg/utils/lib/env'
 
 import { TextInput } from '#/primitives/legacy/Input/TextInput'
 
@@ -11,9 +10,6 @@ import { PkBoxGroupFilterProps } from './pkBoxTypes'
  * on development environments.
  */
 export function PkBoxGroupFilter(props: PkBoxGroupFilterProps) {
-  if (!hasDevFeaturesEnabled()) {
-    return null
-  }
   const FILTER_DEBOUNCE = 300 //milliseconds
   const FILTER_ATTRIBUTE: PkFilterAttribute = 'pid' // hard coding this for now but could be dynamic later
   const ATTRIBUTE_MAP = {
