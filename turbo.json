@@ -33,14 +33,10 @@
       "outputs": ["dist/**", ".next/**", "data/**", "repositories/**"],
       "outputMode": "new-only"
     },
-    "build:beta": {
-      "dependsOn": ["^build:beta"],
-      "outputs": ["dist/**", ".next/**", "data/**", "repositories/**"],
-      "outputMode": "new-only"
-    },
     "codegen": {
       "dependsOn": ["^codegen"],
       "outputs": [
+        "data.head",
         "data/**",
         "styled-system/**",
         "@prisma/client/**",

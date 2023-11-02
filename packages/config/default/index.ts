@@ -25,7 +25,7 @@ const config = {
     twitter: 'https://mobile.twitter.com/supereffectiv',
     patreon: 'https://www.patreon.com/supereffective',
     github: 'https://github.com/itsjavi',
-    github_dataset: 'https://github.com/itsjavi/supereffective-assets',
+    github_dataset: 'https://github.com/itsjavi/supereffective-sdk',
     github_site: 'https://github.com/itsjavi/supereffective',
     issue_report: 'https://github.com/itsjavi/supereffective/issues',
     roadmap: 'https://github.com/users/itsjavi/projects/9',
@@ -53,7 +53,7 @@ const config = {
       return ASSETS_CACHE_VERSION
     },
     baseUrl: 'https://itsjavi.com/supereffective-assets/assets',
-    dataUrl: 'https://itsjavi.com/supereffective-assets/assets/data',
+    dataUrl: 'https://itsjavi.com/supereffective-sdk/data',
     fontsUrl: 'https://itsjavi.com/supereffective-assets/assets/fonts',
     imagesUrl: 'https://itsjavi.com/supereffective-assets/assets/images',
   },

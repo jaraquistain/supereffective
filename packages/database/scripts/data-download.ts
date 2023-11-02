@@ -1,13 +1,11 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const upstreamUrlAssets = 'https://itsjavi.com/supereffective-assets/assets/data'
+// For supereffective-sdk, Github Pages root folder is ./packages/dataset/dist/*
 const upstreamUrlSdk = 'https://itsjavi.com/supereffective-sdk/data'
 
 const dataFiles = [
-  // base url, remote file, local file
-  [upstreamUrlSdk, 'legacy-boxpresets.min.json', 'legacy/box-presets.json'],
-  [upstreamUrlSdk, 'legacy-pokemon.min.json', 'legacy/pokemon.json'],
+  // format: [base-url, remote-file, local-file]
   [upstreamUrlSdk, 'abilities.min.json', 'abilities.json'],
   [upstreamUrlSdk, 'colors.min.json', 'colors.json'],
   [upstreamUrlSdk, 'items.min.json', 'items.json'],
@@ -22,14 +20,13 @@ const dataFiles = [
   [upstreamUrlSdk, 'regions.min.json', 'regions.json'],
   [upstreamUrlSdk, 'ribbons.min.json', 'ribbons.json'],
   [upstreamUrlSdk, 'types.min.json', 'types.json'],
-
-  // TODO: change to upstreamUrlSdk
-  [upstreamUrlAssets, 'legacy/games.json', 'legacy/games.json'],
-  [upstreamUrlAssets, 'legacy/gamesets.json', 'legacy/gamesets.json'],
-  [upstreamUrlAssets, 'gamesets.json', 'gamesets.json'],
-  [upstreamUrlAssets, 'gamesupersets.json', 'gamesupersets.json'],
-  // 'abilities.json',
-  // 'pokedexes.json',
+  // -- Legacy assets (website v3.x):
+  [upstreamUrlSdk, 'legacy-boxpresets.min.json', 'legacy/box-presets.json'],
+  [upstreamUrlSdk, 'legacy-pokemon.min.json', 'legacy/pokemon.json'],
+  [upstreamUrlSdk, 'legacy-games.min.json', 'legacy/games.json'],
+  [upstreamUrlSdk, 'legacy-gamesets.min.json', 'legacy/gamesets.json'],
+  [upstreamUrlSdk, 'legacy-gamesets.min.json', 'gamesets.json'],
+  [upstreamUrlSdk, 'legacy-gamesupersets.min.json', 'gamesupersets.json'],
 ]
 
 const dataDir = path.resolve(path.join(__dirname, '../data'))

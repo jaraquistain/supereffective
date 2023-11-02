@@ -16,6 +16,9 @@ lint:
 pretty:
 	pnpm pretty
 
+data:
+	pnpm -r data:update
+
 code:
 	pnpm codegen
 	pnpm pretty:pkgjsons
