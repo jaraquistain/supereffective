@@ -204,12 +204,6 @@
   grid-template-rows: repeat(4, minmax(32px, 14fr));
 }
 
-:global(.pkBoxCount-1).pkBoxGroupContent {
-  /* -or- li:only-child { */
-  width: 100%;
-  display: block;
-}
-
 :global(.pkBoxCount-1).pkBoxGroupContent .pkBoxContent {
   grid-template-columns: repeat(auto-fill, minmax(72px, 14fr));
 }
