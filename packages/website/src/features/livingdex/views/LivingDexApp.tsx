@@ -845,8 +845,8 @@ export default function LivingDexApp({ loadedDex, presets, onSave }: LivingDexAp
                     shinyAfterRegular && showShinyBoxes
                       ? 'selected'
                       : showShinyBoxes
-                      ? null
-                      : 'disabled',
+                        ? null
+                        : 'disabled',
 
                   title: 'Show shiny Pokémon boxes after the regular ones, instead of mixing them',
                   className: styles.saveBtn,

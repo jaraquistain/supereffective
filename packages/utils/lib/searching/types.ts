@@ -33,13 +33,13 @@ export type SearchWorkerActionPayload<Action> = Action extends SearchWorkerActio
       }
     }
   : Action extends SearchWorkerAction.Query
-  ? {
-      type: SearchWorkerAction.Query
-      algo: SearchWorkerAlgorithm
-      data: {
-        collection: Collection
-        engine: SearchEngine
-        query: string
+    ? {
+        type: SearchWorkerAction.Query
+        algo: SearchWorkerAlgorithm
+        data: {
+          collection: Collection
+          engine: SearchEngine
+          query: string
+        }
       }
-    }
-  : never
+    : never

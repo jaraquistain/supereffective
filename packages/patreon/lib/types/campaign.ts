@@ -1,5 +1,6 @@
 export enum PatreonTier {
   None = 'None',
+  Free = 'Free', // Former patron
   Basic = 'Basic',
   Advanced = 'Advanced',
   Pro = 'Pro',
@@ -15,8 +16,11 @@ export type PatreonTierData = {
   }
 }
 
+export const PATREON_CREATOR_ID = '79731045'
 export const PATREON_CREATOR_HANDLE = 'supereffective'
 export const PATREON_CAMPAIGN_ID = '9272063'
+
+export const PATRON_STATUS_ACTIVE = 'active_patron'
 
 export const PATREON_TIERS: {
   [key in PatreonTier]: PatreonTierData
@@ -27,6 +31,15 @@ export const PATREON_TIERS: {
     level: 0,
     rewards: {
       maxDexes: 5,
+      featuredStreamer: false,
+    },
+  },
+  [PatreonTier.Free]: {
+    id: '10635626',
+    name: 'Free',
+    level: 0,
+    rewards: {
+      maxDexes: 10,
       featuredStreamer: false,
     },
   },

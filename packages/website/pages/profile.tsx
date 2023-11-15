@@ -2,7 +2,7 @@ import { GetServerSidePropsContext } from 'next'
 
 import { getSession } from '@pkg/auth/lib/serverside/getSession'
 import { Membership } from '@pkg/database/lib/types'
-import { getPatreonMembershipByUserId } from '@pkg/database/repositories/users/patrons'
+import { getActivePatreonMembershipByUserId } from '@pkg/database/repositories/users/memberships'
 import { serializeObject } from '@pkg/utils/lib/serialization/jsonSerializable'
 
 import PageMeta from '#/features/pages/components/PageMeta'
@@ -37,11 +37,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     }
   }
 
-  const membership = await getPatreonMembershipByUserId(session.currentUser.uid)
+  const membership = await getActivePatreonMembershipByUserId(session.currentUser.uid)
 
   return {
     props: {
-      membership: serializeObject(membership),
+      membership: membership ? serializeObject(membership) : undefined,
     },
   }
 }

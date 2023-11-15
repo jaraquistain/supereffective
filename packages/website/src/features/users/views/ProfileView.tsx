@@ -4,11 +4,11 @@ import { useSession } from '@pkg/auth/lib/hooks/useSession'
 import { useSignOut } from '@pkg/auth/lib/hooks/useSignOut'
 import { hasPatreonFeaturesEnabled } from '@pkg/config/default/featureFlags'
 import { Membership } from '@pkg/database/lib/types'
+import { createMembershipPlaceholder } from '@pkg/database/repositories/users/memberships'
 
 import { UserRestrictedArea } from '#/layouts/UserRestrictedArea'
 import Button, { PatreonButton, PatreonUnlinkButton } from '#/primitives/legacy/Button/Button'
 
-import { createMembershipPlaceholder } from '../../../../../database/repositories/users/patrons'
 import { PATREON_TIERS_BY_ID } from '../../../../../patreon/lib/types/campaign'
 
 export function ProfileView({

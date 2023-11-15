@@ -74,11 +74,13 @@ model Membership {
   patreonUserId     String?
   patreonMemberId   String?
   patronStatus      String?
+  provider          String  @default("patreon") // "patreon" or "paypal"
   currentTier       String
   highestTier       String
   totalContributed  Int // in cents
   createdAt         DateTime
   updatedAt         DateTime
+  expiresAt         DateTime? // For temporary memberships (e.g. one-time donations)
   userId            String
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

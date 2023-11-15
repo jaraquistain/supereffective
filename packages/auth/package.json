@@ -12,17 +12,17 @@
     "@pkg/database": "workspace:*",
     "@pkg/mailer": "workspace:*",
     "@pkg/utils": "workspace:*",
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.34",
-    "@types/react-dom": "^18.2.14",
-    "nanoid": "^5.0.2",
-    "next-auth": "^4.24.4",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "nanoid": "^5.0.3",
+    "next-auth": "^4.24.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.2.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "tsx": "^3.14.0"
+    "tsx": "^4.1.1"
   }
 }

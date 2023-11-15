@@ -4,13 +4,12 @@ import { apiGuard } from '@pkg/auth/lib/serverside/apiGuard'
 import { getSession } from '@pkg/auth/lib/serverside/getSession'
 import { envVars } from '@pkg/config/default/env'
 import { Membership } from '@pkg/database/lib/types'
+import { linkPatreonAccount } from '@pkg/database/repositories/users/memberships'
 import patreon from '@pkg/patreon/lib/patreonClient'
 import { apiErrors } from '@pkg/utils/lib/types'
 
 import config from '#/config'
 import { Routes } from '#/config/routes'
-
-import { linkPatreonAccount } from '../../../../database/repositories/users/patrons'
 
 const _linkPatreonAccount = async (
   userId: string,
@@ -80,7 +79,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         Routes.Profile + '?status=error&provider=patreon&action=link&error=no_membership'
       )
       return
-      break
     }
   }
 }

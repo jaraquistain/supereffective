@@ -9,7 +9,24 @@ import {
 import { Membership } from '../../lib/types'
 import { getPrismaClient } from '../../prisma/getPrismaClient'
 
-export async function getPatreonMembershipByUserId(userId: string): Promise<Membership | null> {
+export async function getActivePatreonMembershipByUserId(
+  userId: string
+): Promise<Membership | null> {
+  const membership = await getPatreonMembershipByUserId(userId)
+
+  if (!membership) {
+    return null
+  }
+
+  if (membership.expiresAt && membership.expiresAt < new Date()) {
+    // membership expired
+    return null
+  }
+
+  return membership
+}
+
+async function getPatreonMembershipByUserId(userId: string): Promise<Membership | null> {
   const client = getPrismaClient()
 
   const record = await client.membership.findFirst({
@@ -65,6 +82,7 @@ export async function linkPatreonAccount(
     currentTier: tier.id,
     patreonMemberId: memberData.membership.id,
     patreonUserId: memberData.user.id,
+    provider: 'patreon',
     patronStatus: memberData.membership.attributes.patron_status,
     totalContributed: memberData.membership.attributes.lifetime_support_cents,
   })
@@ -91,6 +109,7 @@ export async function addPatreonMembership(
     patreonUserId: string
     patreonMemberId: string
     patronStatus: string
+    provider: string
     totalContributed: number
   }
 ): Promise<Membership | null> {
@@ -176,6 +195,8 @@ export function createMembershipPlaceholder(userId: string): Membership {
     patreonCampaignId: PATREON_CAMPAIGN_ID,
     patreonUserId: null,
     patronStatus: null,
+    provider: 'patreon',
+    expiresAt: null,
     totalContributed: 0,
     overridenRewards: false,
     createdAt: new Date(),

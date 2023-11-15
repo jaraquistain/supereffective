@@ -20,9 +20,9 @@
     "@pkg/patreon": "workspace:*",
     "@pkg/utils": "workspace:*",
     "@prisma/client": "^5.5.2",
-    "@types/node": "^20.8.10",
+    "@types/node": "^20.9.0",
     "prisma": "^5.5.2",
-    "tsx": "^3.14.0",
+    "tsx": "^4.1.1",
     "typescript": "^5.2.2",
     "zod": "^3.22.4"
   },

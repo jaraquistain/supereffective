@@ -278,9 +278,12 @@ export function PkBoxGroup(props: PkBoxGroupProps) {
   const boxElementsToUse = props.showShiny ? shinyBoxElements : boxElements
   const totalBoxCount = boxElementsToUse.length
 
-  const pagedBoxElements = boxElementsToUse
-    .filter(filterBoxElements.bind(null, state.filter))
-    .slice(0, perPage)
+  // We only want to filter the boxes if there is an active filter
+  const filteredBoxElements = state.filter
+    ? boxElementsToUse.filter(filterBoxElements.bind(null, state.filter))
+    : boxElementsToUse
+
+  const pagedBoxElements = filteredBoxElements.slice(0, perPage)
   const hasMoreBoxes = perPage < totalBoxCount
 
   // const handleLoadAll = (): void => {

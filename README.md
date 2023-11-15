@@ -22,7 +22,7 @@ We use the following technologies, services and tools:
 - Vercel (Pro tier) for hosting and deployments
 - GitHub for hosting [static data](https://github.com/itsjavi/supereffective-sdk)
 - CloudFlare for caching and DNS
-- Docker and Maildev as a local mail server for development
+- Docker, PostgreSQL and Maildev for local development environment
 - Other tools: ESLint, Prettier, Husky, etc.
 
 This repository is a Turbo monorepo, meaning it contains multiple packages and apps.
@@ -77,8 +77,9 @@ You will need Docker (for the local DB and mail server), Node v18 LTS and pnpm v
 1. Clone the repository
 2. Install dependencies: `pnpm install`
 3. Generate necessary data and code locally: `pnpm codegen`
-4. Configure your DB connection strings.
-   You can use the `db` service in `docker-compose.yml` to spawn a local DB, or use a provider like Neon.tech,
+4. Configure your PostgreSQL DB connection strings.
+   You can use the `db` service in `docker-compose.yml` to spawn a local DB using Docker,
+   or or use a provider like Neon.tech,
    then configure the database env vars in:
 
 - packages/database/.env

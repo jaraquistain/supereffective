@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 import { apiGuard } from '@pkg/auth/lib/serverside/apiGuard'
 import { getSession } from '@pkg/auth/lib/serverside/getSession'
+import { removePatreonMembership } from '@pkg/database/repositories/users/memberships'
 import { apiErrors } from '@pkg/utils/lib/types'
 
 import { Routes } from '#/config/routes'
-
-import { removePatreonMembership } from '../../../../database/repositories/users/patrons'
 
 const unlinkPatreonAccount = async (
   res: NextApiResponse,
